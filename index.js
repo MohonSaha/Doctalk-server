@@ -45,7 +45,7 @@ async function run() {
 
     //Read or show all data of doctors:-
     app.get('/allDoctors', async(req, res) =>{
-      console.log(req.query);
+      // console.log(req.query);
       const page = parseInt(req.query.page) || 0;
       const limit = parseInt(req.query.limit) || 4;
       const skip = page * limit;
@@ -73,6 +73,14 @@ async function run() {
         const result = await servicesCollection.findOne(query);
         res.send(result)
     })
+
+    // Read or show specific data :-
+    app.get('/doctorsDetails/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await doctorsCollection.findOne(query);
+      res.send(result)
+  })
 
 
     // Create or add or insert new data:- 
