@@ -32,14 +32,39 @@ async function run() {
 
 
     const servicesCollection = client.db("docTalkDB").collection("services");
+    const doctorsCollection = client.db("docTalkDB").collection("doctors");
 
 
-    //Read or show all data:-
+    //Read or show all data of services:-
     app.get('/allServices', async(req, res) =>{
         const cursor = servicesCollection.find()
         const result = await cursor.toArray();
         res.send(result)
     })
+    
+
+    //Read or show all data of doctors:-
+    app.get('/allDoctors', async(req, res) =>{
+      console.log(req.query);
+      const page = parseInt(req.query.page) || 0;
+      const limit = parseInt(req.query.limit) || 4;
+      const skip = page * limit;
+
+
+      const result = await doctorsCollection.find().skip(skip).limit(limit).toArray();
+      res.send(result)
+  })
+
+
+    //Read or show total number of data of doctors:-
+    app.get('/totalDoctors', async(req, res) =>{
+      
+      const result = await doctorsCollection.estimatedDocumentCount();
+      res.send({totalDoctors: result})
+    })
+
+
+
 
     // Read or show specific data :-
     app.get('/singleServices/:id', async(req, res) =>{
