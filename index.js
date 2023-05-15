@@ -40,6 +40,14 @@ async function run() {
         res.send(result)
     })
 
+    // Read or show specific data :-
+    app.get('/singleServices/:id', async(req, res) =>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await servicesCollection.findOne(query);
+        res.send(result)
+    })
+
 
     // Create or add or insert new data:- 
     app.post('/addServices', async(req, res)=> {
@@ -47,6 +55,31 @@ async function run() {
         const result = await servicesCollection.insertOne(newServices)
         res.send(result)
     })
+
+
+    // Update existing data :-
+
+    // Receive data from UI:-
+    app.put('/updateService/:id', async(req, res)=>{
+        const id = req.params.id;
+        const service = req.body;
+
+
+        //send update data to the database:-
+        const filter = {_id: new ObjectId(id)};
+        const options = {upsert: true};
+        const updatedService = {
+            $set: {
+                name: service.name,
+                photo: service.photo,
+                details: service.details
+            }
+        }
+
+        const result = await servicesCollection.updateOne(filter, updatedService, options);
+        res.send(result);
+    })
+
 
 
     // Delete a specific data form database:-
